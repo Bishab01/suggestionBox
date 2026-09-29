@@ -1,0 +1,57 @@
+@import 'tailwindcss';
+
+.mainBg{
+    @apply h-screen bg-gray-50 overflow-hidden;
+}
+
+.inputBox{
+    @apply border border-blue-900/90 bg-white/90 rounded-sm mt-2 h-8.5 px-2 w-full
+    focus:outline-blue-900;
+}
+
+.passwordBox{
+   @apply border border-blue-900/90 bg-gray-200 rounded-sm mt-2 px-2 w-full
+    focus-within:outline-1 focus-within:outline-white
+    focus-within:outline-offset-1
+    focus-within:border-blue-900;
+}
+
+.button{
+    @apply px-4 py-1.5 font-medium rounded-lg;
+}
+
+.navButton{
+    @apply rounded-xl px-4.5 py-2 text-sm sm:text-base whitespace-nowrap font-medium;
+}
+
+.body{
+    @apply flex-1 overflow-x-hidden overflow-y-auto scrollbar-none;
+}
+
+.categoryButton{
+    @apply px-4 py-1.5 mr-2 mb-2 rounded-2xl whitespace-nowrap;
+}
+
+.responsiveM{
+    @apply m-5 sm:m-6 md:m-7 lg:m-8;
+}
+
+.responsivePx{
+    @apply px-4 sm:px-5.5 md:px-7 lg:px-8.5 xl:px-10;
+}
+
+.label{
+    @apply font-medium text-white/95;
+}
+
+.gridLayout{
+    @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5 lg:gap-6;
+}
+
+.newsGrid{
+    @apply grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3;
+}
+
+.popUp{
+    @apply fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center z-50;
+}
