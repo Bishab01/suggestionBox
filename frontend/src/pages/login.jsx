@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, LogIn } from "lucide-react";
 import Logo from "../assets/sujhavPeti.png";
 
 function Login() {
@@ -22,7 +22,7 @@ function Login() {
     const handleSubmit = async(e) => {
         e.preventDefault();
 
-        if(!formData.email.trim()||formData.password.trim())
+        if(!formData.email.trim()||!formData.password.trim())
         {
             setMsg("All fields are required.");
             setMsgType("error");
@@ -36,22 +36,38 @@ function Login() {
 
   return (
     <div className="mainBg">
-        <div className="flex items-center bg-[#033B79] justify-center size-full">
-            <div className="flex items-stretch rounded-xl overflow-hidden">
+        <div className="flex items-center bg-[#023166]  justify-center size-full overflow-y-auto">
+            <div className="flex items-stretch rounded-xl mx-2 overflow-hidden">
                 
                 {/* Logo */}
                 <div className="hidden md:flex bg-white/95 md:w-90 flex-col items-center justify-center text-center">
-                    <img src={Logo} alt="Sujav Peti logo" className="w-80 h-auto -mt-8 object-contain"/>
+                    <img src={Logo} alt="Sujav Peti logo" className="w-80 h-auto -mt-8 object-contain shrink-0"/>
                     <p className="text-md font-bold text-[#033B79]">
                         Your Suggestion is Our Priority
                     </p>
                 </div>
                 
                 {/* Login Card */}
-                <div className="py-10 px-8 bg-[#1268C2]  w-80 md:w-90">
+                <div className="py-10 px-8 bg-[#1a73d3] w-85 md:w-90">
+                    {/* logo when less than md */}
+                    <div className="md:hidden w-full flex items-center justify-center">
+                        <div className="flex items-center justify-center rounded-full size-30 bg-white/95 overflow-hidden border-2 border-[#ff9c09]">
+                            <img src={Logo} alt="Sujav Peti logo" className="size-full -mt-3 object-contain shrink-0"/>
+                        </div>
+                    </div>
                     
                     {/* Title */}
-                    <h1 className=" text-center text-white mb-2 font-medium text-nowrap text-lg">Login Portal</h1>
+                    <div className="md:hidden w-full flex flex-col items-center">
+                        <div className="flex my-5 items-center w-65 gap-2">
+                            <div className="h-0.5 w-full bg-white/70"></div>
+                            <h1 className=" text-white font-medium text-lg text-nowrap">Log in</h1>
+                            <div className="h-0.5 w-full bg-white/70"></div>
+                        </div>
+                    </div>
+
+                    <h1 className="hidden md:block text-center text-white mb-2 font-medium text-nowrap text-lg">
+                        Login Portal
+                    </h1>
 
                     {/* Form */}
                     <form 
@@ -78,6 +94,7 @@ function Login() {
                             <input 
                                 type={showPassword ? "text" : "password"} 
                                 name='password'
+                                required
                                 value= {formData.password}
                                 onChange={handleChange}
                                 placeholder="Enter your password"
@@ -94,6 +111,19 @@ function Login() {
                                 }
                             </button>
                         </div>
+
+                        {msg && (
+                            <p
+                                className={`my-5 font-medium rounded-md text-center px-3 py-1 border
+                                    ${
+                                        msgType === "success"
+                                            ? "text-green-700 bg-white/95 border-green-300"
+                                            : "text-red-600 bg-white/95 border-red-300"
+                                    }`}
+                            >
+                                {msg}
+                            </p>
+                        )}
                         
                         <div className="flex justify-center w-full">
                             <button 
@@ -101,19 +131,15 @@ function Login() {
                                 type="submit" 
                                 disabled={submitting}
                             >
-                                {submitting ? "Signing in..." : "Sign in"}
+                                {submitting ? "Signing in..." : 
+                                    <div className="flex items-center justify-center gap-2">
+                                        <LogIn className="size-5 shrink-0"/>
+                                        <span>Sign in</span> 
+                                    </div>
+                                }
                             </button>
                         </div>
 
-                        {msg && 
-                            <p className={`mt-2 font-medium rounded-md text-center px-3 py-1.5
-                                ${msgType==='success'
-                                    ?"text-black/70 bg-white/95"
-                                    :"text-red-600 bg-white/95"}`}
-                            >
-                                {msg}
-                            </p>
-                        }
                     </form>
 
                     {/* Option */}
@@ -125,7 +151,7 @@ function Login() {
                         </div>
                         
                         <p className="text-sm text-white/80"> 
-                            Don't have an account? <Link to="/register" className="text-white">Register Now</Link>
+                            Don't have an account? <Link to="/register" className="text-white underline">Register Now</Link>
                         </p>
                     </div>
 

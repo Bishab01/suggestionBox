@@ -33,47 +33,25 @@
 }
 
 .responsiveM{
-    @apply m-4 sm:m-6 lg:m-10;
+    @apply m-5 sm:m-6 md:m-7 lg:m-8;
 }
 
-.link{
-    @apply text-green-700 underline
+.responsivePx{
+    @apply px-4 sm:px-5.5 md:px-7 lg:px-8.5 xl:px-10;
 }
 
 .label{
     @apply font-medium text-white/95;
 }
 
-.modal{
-    @apply fixed inset-0 z-50 bg-black/30 flex items-center justify-center;
-}
-
 .gridLayout{
     @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5 lg:gap-6;
 }
 
+.newsGrid{
+    @apply grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3;
+}
+
 .popUp{
     @apply fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center z-50;
-}
-
-/* Staggered fade/slide-in used when search or filter results appear */
-@keyframes resultFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px) scale(0.97);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-.resultAppear{
-    animation: resultFadeIn 0.35s ease-out both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .resultAppear{
-        animation: none;
-    }
 }

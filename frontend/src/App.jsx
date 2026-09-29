@@ -1,10 +1,12 @@
 import {Outlet} from "react-router-dom";
+import Navbar from "./components/navbar";
 
 function App() {
   return (
     <div className="mainBg">
         <div className="flex flex-col h-full">
-            <Outlet/>
+            <Navbar />
+            <Outlet />
         </div>
     </div>
   )
