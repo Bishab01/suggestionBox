@@ -1,0 +1,79 @@
+@import 'tailwindcss';
+
+.mainBg{
+    @apply h-screen bg-gray-50 overflow-hidden;
+}
+
+.inputBox{
+    @apply border border-blue-900/90 bg-white/90 rounded-sm mt-2 h-8.5 px-2 w-full
+    focus:outline-blue-900;
+}
+
+.passwordBox{
+   @apply border border-blue-900/90 bg-gray-200 rounded-sm mt-2 px-2 w-full
+    focus-within:outline-1 focus-within:outline-white
+    focus-within:outline-offset-1
+    focus-within:border-blue-900;
+}
+
+.button{
+    @apply px-4 py-1.5 font-medium rounded-lg;
+}
+
+.navButton{
+    @apply rounded-xl px-4.5 py-2 text-sm sm:text-base whitespace-nowrap font-medium;
+}
+
+.body{
+    @apply flex-1 overflow-x-hidden overflow-y-auto scrollbar-none;
+}
+
+.categoryButton{
+    @apply px-4 py-1.5 mr-2 mb-2 rounded-2xl whitespace-nowrap;
+}
+
+.responsiveM{
+    @apply m-4 sm:m-6 lg:m-10;
+}
+
+.link{
+    @apply text-green-700 underline
+}
+
+.label{
+    @apply font-medium text-white/95;
+}
+
+.modal{
+    @apply fixed inset-0 z-50 bg-black/30 flex items-center justify-center;
+}
+
+.gridLayout{
+    @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5 lg:gap-6;
+}
+
+.popUp{
+    @apply fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center z-50;
+}
+
+/* Staggered fade/slide-in used when search or filter results appear */
+@keyframes resultFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.resultAppear{
+    animation: resultFadeIn 0.35s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .resultAppear{
+        animation: none;
+    }
+}
