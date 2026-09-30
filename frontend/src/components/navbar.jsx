@@ -29,7 +29,7 @@ function Navbar() {
 
   return (
     <header className="flex h-fit bg-[#023166] text-white shadow-md">
-      <div className="flex w-full items-center justify-between gap-4 py-4 responsivePx">
+      <div className="flex w-full items-center justify-between gap-4 py-4 px-4 sm:px-5.5 md:px-7 lg:px-8.5 xl:px-10">
         <div className="flex items-center gap-2 text-xl font-semibold whitespace-nowrap">
           <Landmark className="size-6 text-[#ff9c09]" />
           <span className="hidden sm:inline">Sujav Peti</span>

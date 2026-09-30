@@ -10,6 +10,7 @@ function NewsForm() {
   const [form, setForm] = useState({
     title: "",
     category: "",
+    author: "",
     excerpt: "",
     content: "",
     status: "draft",
@@ -99,6 +100,16 @@ function NewsForm() {
           placeholder="e.g. Infrastructure, Health, Budget"
           value={form.category || ""}
           onChange={handleChange("category")}
+        />
+
+        <label className="formLabel">
+          Author
+        </label>
+        <input 
+          className="inputBox" 
+          value={form.author || ""} 
+          placeholder="Enter name of author(s)"
+          onChange={handleChange("author")} 
         />
         
         <label className="formLabel">

@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { MessageSquare, Newspaper } from "lucide-react";
 import { mockNews } from "../data/newsData";
+import NewsDetail from "./newsDetail";
 
 function Home() {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
+  const [selectedNews, setSelectedNews] = useState(null);
 
 //   useEffect(() => {
 //     api
@@ -21,6 +21,15 @@ function Home() {
 //       .finally(() => setLoading(false));
 //   }, [page]);
 
+  if (selectedNews) {
+    return (
+      <NewsDetail
+        item={selectedNews}
+        onBack={() => setSelectedNews(null)}
+      />
+    );
+  }
+
   return (
     <div className="body responsiveM">
       <h1 className="text-3xl font-bold text-[#023166]">Government News &amp; Plans</h1>
@@ -30,11 +39,13 @@ function Home() {
       </p>
 
       {loading && <p className="text-gray-500 font-medium">Loading...</p>}
-      {/* {error && <div className="alertError">{error}</div>} */}
 
       <div className="newsGrid">
-        {mockNews.map((item) => (
+        {mockNews
+        .filter((item) => item.status === "published")
+        .map((item) => (
           <div
+            onClick={()=>setSelectedNews(item)}
             key={item.id}
             className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
           >

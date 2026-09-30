@@ -8,6 +8,8 @@ export const mockNews = [
     status:"published",
     published_at: "2026-09-25",
     comments_count: 12,
+    content:
+      "The government has launched a new digital portal to make public services more accessible and convenient for citizens.",
   },
   {
     id: 2,
@@ -18,6 +20,8 @@ export const mockNews = [
     status:"published",
     published_at: "2026-09-22",
     comments_count: 8,
+    content:
+      "The government has launched a new digital portal to make public services more accessible and convenient for citizens.",
   },
   {
     id: 3,
@@ -28,6 +32,8 @@ export const mockNews = [
     status:"published",
     published_at: "2026-09-18",
     comments_count: 21,
+    content:
+      "The government has launched a new digital portal to make public services more accessible and convenient for citizens.",
   },
   {
     id: 4,
@@ -38,6 +44,8 @@ export const mockNews = [
     status:"published",
     published_at: "2026-09-15",
     comments_count: 15,
+    content:
+      "The government has launched a new digital portal to make public services more accessible and convenient for citizens.",
   },
   {
     id: 5,
@@ -48,6 +56,8 @@ export const mockNews = [
     status:"draft",
     published_at: "2026-09-10",
     comments_count: 6,
+    content:
+      "The government has launched a new digital portal to make public services more accessible and convenient for citizens.",
   },
   {
     id: 6,
@@ -58,5 +68,7 @@ export const mockNews = [
     status:"published",
     published_at: "2026-09-06",
     comments_count: 18,
+    content:
+      "The government has launched a new digital portal to make public services more accessible and convenient for citizens.",
   },
 ];

@@ -53,15 +53,16 @@ select.inputBox {
 }
 
 .containerNarrow{
-    @apply mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 overflow-x-hidden overflow-y-auto scrollbar-none;
+    @apply mx-3 w-auto max-w-3xl px-4 py-8 overflow-x-hidden overflow-y-auto scrollbar-none;
+    @apply sm:mx-4 md:mx-auto;
 }
 
 .responsiveM{
     @apply m-5 sm:m-6 md:m-7 lg:m-8;
 }
 
-.responsivePx{
-    @apply px-4 sm:px-5.5 md:px-7 lg:px-8.5 xl:px-10;
+.alertInfo{
+    @apply my-4 rounded-md border border-blue-200 bg-blue-50 px-4 py-2 text-sm text-blue-800;
 }
 
 .label{
@@ -82,4 +83,8 @@ select.inputBox {
 
 .popUp{
     @apply fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center z-50;
+}
+
+.alertError{
+    @apply my-4 rounded-md border border-red-300 bg-red-50 px-4 py-2 text-sm text-red-700;
 }

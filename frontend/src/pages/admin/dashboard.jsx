@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../../api/axios";
 import {mockNews} from "../../data/newsData";
-import {Plus} from "lucide-react";
+import {Plus, Newspaper} from "lucide-react";
 
 function Dashboard() {
   const [loading, setLoading] = useState(false);
@@ -141,7 +141,13 @@ function Dashboard() {
         </table>
       </div>
       {!loading && mockNews.length === 0 && (
-        <p className="mt-4 text-gray-500">No news items yet.</p>
+        <div className="w-full h-90 border border-gray-100 bg-white rounded-lg shadow-lg
+          flex flex-col items-center justify-center text-center text-gray-500"
+        >
+          <Newspaper className="size-17 md:size-19"/>
+          <p className="text-md md:text-lg font-medium tracking-wide pt-3">No news has been published yet.</p>
+          <p className="text-sm md:text-md font-medium tracking-wide pt-1">We’ll share the latest updates as soon as they’re verified.</p>
+        </div>
       )}
     </div>
   );

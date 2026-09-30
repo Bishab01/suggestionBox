@@ -6,6 +6,7 @@ import App from '../App';
 import Home from '../pages/home';
 import Dashboard from '../pages/admin/dashboard';
 import NewsForm from '../pages/admin/newsForm';
+import CommentsModeration from '../pages/admin/commentsModeration';
 import ProtectedRoute from "./protectedRoute";
 
 function Approutes() {
@@ -34,6 +35,7 @@ function Approutes() {
         {/* <Route path="/dashboard" element={<ProtectedRoute adminOnly><Dashboard /></ProtectedRoute>} /> */}
         <Route path="/admin/dashboard" element={<Dashboard />} />
         <Route path="/admin/publish_news" element={<NewsForm />} />
+        <Route path="/admin/comments" element={<CommentsModeration />} />
       </Route>
     </Routes>
   );
