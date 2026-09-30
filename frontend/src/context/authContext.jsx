@@ -24,13 +24,14 @@ export function AuthProvider({ children }) {
     return res.data.user;
   };
 
-  const register = async (name, email, password, password_confirmation) => {
+  const register = async (fname, lname, email, password) => {
     await getCsrfCookie();
     const res = await api.post("/register", {
-      name,
+      fname,
+      lname,
       email,
       password,
-      password_confirmation,
+      password_confirmation: password,
     });
     setUser(res.data.user);
     return res.data.user;
