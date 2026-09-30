@@ -5,8 +5,13 @@
 }
 
 .inputBox{
-    @apply border border-blue-900/90 bg-white/90 rounded-sm mt-2 h-8.5 px-2 w-full
+    @apply border border-blue-900/90 bg-white/90 rounded-sm mt-2 px-2 w-full
     focus:outline-blue-900;
+}
+
+input.inputBox,
+select.inputBox {
+    @apply h-8.5;
 }
 
 .passwordBox{
@@ -20,16 +25,35 @@
     @apply px-4 py-1.5 font-medium rounded-lg;
 }
 
+.btnPrimary{
+    @apply inline-flex items-center justify-center rounded-lg bg-[#1a73d3] px-4 py-2 text-sm font-medium text-white
+    hover:bg-[#155fb0] disabled:opacity-60 disabled:cursor-not-allowed;
+}
+
+.btnOutline{
+    @apply inline-flex items-center justify-center rounded-lg border border-[#1a73d3] px-4 py-2 text-sm font-medium text-[#1a73d3]
+    hover:bg-[#1a73d3]/10 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
 .navButton{
     @apply rounded-xl px-4.5 py-2 text-sm sm:text-base whitespace-nowrap font-medium;
+}
+
+.btnSmall{
+    @apply inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-gray-700
+    hover:bg-gray-100;
+}
+
+.btnDanger{
+    @apply border-red-300 text-red-600 hover:bg-red-50;
 }
 
 .body{
     @apply flex-1 overflow-x-hidden overflow-y-auto scrollbar-none;
 }
 
-.categoryButton{
-    @apply px-4 py-1.5 mr-2 mb-2 rounded-2xl whitespace-nowrap;
+.containerNarrow{
+    @apply mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 overflow-x-hidden overflow-y-auto scrollbar-none;
 }
 
 .responsiveM{
@@ -42,6 +66,10 @@
 
 .label{
     @apply font-medium text-white/95;
+}
+
+.formLabel{
+    @apply text-sm font-medium text-gray-700;
 }
 
 .gridLayout{

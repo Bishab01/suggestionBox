@@ -4,6 +4,9 @@ import Login from '../pages/login';
 import Register from '../pages/register';
 import App from '../App';
 import Home from '../pages/home';
+import Dashboard from '../pages/admin/dashboard';
+import NewsForm from '../pages/admin/newsForm';
+import ProtectedRoute from "./protectedRoute";
 
 function Approutes() {
   return (
@@ -27,8 +30,10 @@ function Approutes() {
         <Route path="/checkout" element={<CustomerOnlyRoute><Checkout /></CustomerOnlyRoute>} />
 
         {/* Open to retailer }
-        <Route path="/dashboard" element={<RetailerRoute><Dashboard /></RetailerRoute>} />
         <Route path="/productsRetailer" element={<RetailerRoute><AdminProducts /></RetailerRoute>} /> */}
+        {/* <Route path="/dashboard" element={<ProtectedRoute adminOnly><Dashboard /></ProtectedRoute>} /> */}
+        <Route path="/admin/dashboard" element={<Dashboard />} />
+        <Route path="/admin/publish_news" element={<NewsForm />} />
       </Route>
     </Routes>
   );
