@@ -130,7 +130,7 @@ function NewsForm() {
         </label>
         <input
           className="inputBox"
-          placeholder="e.g. Infrastructure, Health, Budget"
+          placeholder="e.g. Announcement, Development Plan, Policy, Public Notice"
           value={form.category || ""}
           onChange={handleChange("category")}
         />
@@ -141,7 +141,7 @@ function NewsForm() {
         <input 
           className="inputBox" 
           value={form.author || ""} 
-          placeholder="Enter name of author(s)"
+          placeholder="Enter the name of author(s)"
           onChange={handleChange("author")} 
         />
         

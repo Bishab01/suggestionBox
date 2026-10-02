@@ -13,16 +13,23 @@ export const decodeHtml = (str) => {
 // Safari can't parse that format, so make it ISO 8601 with the offset.
 export const parseDbDate = (str) => {
   if (!str) return null;
+
   const d = new Date(str.replace(" ", "T") + "+05:45");
-  return isNaN(d) ? null : d;
+  return isNaN(d.getTime()) ? null : d;
 };
 
 export const formatDate = (str) => {
   const d = parseDbDate(str);
-  return d ? d.toLocaleDateString() : "—";
+  if (!d) return "—";
+
+  return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`;
 };
 
 export const formatDateTime = (str) => {
   const d = parseDbDate(str);
-  return d ? d.toLocaleString() : "";
+  if (!d) return "";
+
+  return d.toLocaleString("en-NP", {
+    timeZone: "Asia/Kathmandu",
+  });
 };

@@ -121,7 +121,9 @@ function NewsDetail({item}) {
               </span>
             </li>
           ))}
-          {comments.length === 0 && <p className="text-gray-500">Be the first to comment.</p>}
+          {comments.length === 0 && user?.role === "citizen" && (
+            <p className="text-gray-500">Be the first to comment.</p>
+          )}
         </ul>
       </section>
 

@@ -48,15 +48,15 @@ function CommentsModeration() {
       {loading && <p className="font-medium text-gray-500">Loading...</p>}
       {error && <div className="alertError">{error}</div>}
 
-      <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <ul className="grid grid-cols-1 md:grid-cols-2 items-stretch gap-4">
         {comments.map((c) => (
-          <li key={c.cid} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+          <li key={c.cid} className="flex flex-col rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
             <div className="font-semibold text-gray-900">
               {c.user_name || "Citizen"} on{" "}
               <em className="font-normal">{c.news_title || "a news item"}</em>
             </div>
-            <p className="mt-1 text-gray-700">{decodeHtml(c.body)}</p>
-            <div className="mt-3 flex items-center justify-between">
+            <p className="mt-1 wrap-break-word text-gray-700">{decodeHtml(c.body)}</p>
+            <div className="mt-auto pt-2 flex items-center justify-between">
               <span className="text-xs text-gray-500">
                 {formatDateTime(c.created_at)}
               </span>
