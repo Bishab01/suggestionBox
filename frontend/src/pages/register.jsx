@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, setTimeout} from "react";
+import { Link, useNavigate} from "react-router-dom";
 import { Eye, EyeOff, UserPlus } from "lucide-react";
+import api from "../api/axios";
 
 function Register() {
 //   const { login } = useAuth();
-//   const navigate = useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fname: "",
     lname: "",
@@ -28,13 +29,13 @@ function Register() {
     const handleSubmit = async(e) => {
         e.preventDefault();
 
-        if (!nameRegex.test(formData.fname)){
+        if (!nameRegex.test(formData.fname)) {
             setMsg("First name must contain only letters.");
             setMsgType("error");
             return;
         }
 
-        if (!nameRegex.test(formData.lname)){
+        if (!nameRegex.test(formData.lname)) {
             setMsg("Last name must contain only letters.");
             setMsgType("error");
             return;
@@ -46,8 +47,34 @@ function Register() {
             return;
         }
 
+        setSubmitting(true);
         setMsg("");
-        //try{} catch
+        try {
+            const response = await api.post("/register", formData);
+
+            setMsg(response.data.message);
+            setMsgType("success");
+
+            setFormData({
+                fname: "",
+                lname: "",
+                email: "",
+                password: ""
+            });
+
+            setTimeout(() => {
+                navigate("/login");
+            }, 500);
+
+        } catch (error) {
+            setMsg(
+                error.response?.data?.message ||
+                "Registration failed."
+            );
+            setMsgType("error");
+        } finally {
+            setSubmitting(false);
+        }
     };
 
   return (

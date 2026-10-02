@@ -26,6 +26,7 @@ dist-ssr
 # Environment files (keep .env.example committed)
 .env
 .env.production
+.env.development
 
 # Windows
 Thumbs.db

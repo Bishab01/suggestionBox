@@ -1,15 +1,11 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Landmark, LogIn, LogOut } from "lucide-react";
 import { useState } from "react";
-// import { useAuth } from "../context/authContext";
+import {useAuth} from "../context/authContext";
 
 function Navbar() {
-  // const { user, logout, isAdmin } = useAuth();
+  const { user, loading, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
-  const user  = false;
-  // const user = "Bishab Shakya";
-  const [logout, setLogout] = useState(false);
-  const isAdmin = false;
 
   const citizenNav = [
     {name:"News & Plans", path:"/home"},
@@ -22,10 +18,10 @@ function Navbar() {
 
   const navigations = isAdmin ? adminNav : citizenNav;
 
-  // const handleLogout = async () => {
-  //   await logout();
-  //   navigate("/login");
-  // };
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
 
   return (
     <header className="flex h-fit bg-[#023166] text-white shadow-md">
@@ -51,9 +47,9 @@ function Navbar() {
                   {item.name}
               </NavLink>
           ))}
-          {user ? (
+          {loading ? null :user ? (
             <button
-              // onClick={handleLogout}
+              onClick={handleLogout}
               className="
                 flex items-center gap-1
                 font-medium rounded-lg

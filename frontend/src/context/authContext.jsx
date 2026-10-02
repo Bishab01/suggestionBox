@@ -1,64 +1,82 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import api, { getCsrfCookie } from "../api/axios";
+import api from "../api/axios";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null);
+    // true until the first /me call finishes, so ProtectedRoute does not
+    // bounce a logged-in user to /login while the session is being checked.
+    const [loading, setLoading] = useState(true);
 
-  // On load, ask the server who we are. The session cookie (if any) is sent
-  // automatically; a 401 simply means "guest".
-  useEffect(() => {
-    api
-      .get("/me")
-      .then((res) => setUser(res.data.user))
-      .catch(() => setUser(null))
-      .finally(() => setLoading(false));
-  }, []);
+    // Restore the session after a page refresh (the cookie lives in the browser,
+    // the user data lives on the server).
+    useEffect(() => {
+        let cancelled = false;
 
-  const login = async (email, password) => {
-    await getCsrfCookie();
-    const res = await api.post("/login", { email, password });
-    setUser(res.data.user);
-    return res.data.user;
-  };
+        api.get("/me")
+            .then((res) => {
+                if (!cancelled) setUser(res.data.user);
+            })
+            .catch(() => {
+                if (!cancelled) setUser(null);
+            })
+            .finally(() => {
+                if (!cancelled) setLoading(false);
+            });
 
-  const register = async (fname, lname, email, password) => {
-    await getCsrfCookie();
-    const res = await api.post("/register", {
-      fname,
-      lname,
-      email,
-      password,
-      password_confirmation: password,
-    });
-    setUser(res.data.user);
-    return res.data.user;
-  };
+        return () => {
+            cancelled = true;
+        };
+    }, []);
 
-  const logout = async () => {
-    try {
-      await api.post("/logout");
-    } catch {
-      // ignore network errors on logout
-    }
-    setUser(null);
-  };
+    const login = async (email, password) => {
+        const response = await api.post("/login", { email, password });
+        setUser(response.data.user);
+        return response.data.user;
+    };
 
-  const isAdmin = user?.role === "admin";
+    const register = async (fname, lname, email, password) => {
+        const response = await api.post("/register", {
+            fname,
+            lname,
+            email,
+            password,
+        });
+        return response.data.user;
+    };
 
-  return (
-    <AuthContext.Provider
-      value={{ user, loading, login, register, logout, isAdmin }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+    const logout = async () => {
+        try {
+            await api.post("/logout");
+        } catch {
+            // Even if the server call fails (expired session, offline),
+            // the user should still be logged out in the UI.
+        } finally {
+            setUser(null);
+        }
+    };
+
+    const isAdmin = user?.role === "admin";
+    const isCitizen = user?.role === "citizen";
+
+    return (
+        <AuthContext.Provider
+            value={{
+                user,
+                loading,
+                login,
+                register,
+                logout,
+                isAdmin,
+                isCitizen,
+            }}
+        >
+            {children}
+        </AuthContext.Provider>
+    );
 }
 
 export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
-  return ctx;
+    return useContext(AuthContext);
 }

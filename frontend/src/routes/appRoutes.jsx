@@ -1,5 +1,5 @@
 import '../styles/index.css';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import Login from '../pages/login';
 import Register from '../pages/register';
 import App from '../App';
@@ -33,9 +33,13 @@ function Approutes() {
         {/* Open to retailer }
         <Route path="/productsRetailer" element={<RetailerRoute><AdminProducts /></RetailerRoute>} /> */}
         {/* <Route path="/dashboard" element={<ProtectedRoute adminOnly><Dashboard /></ProtectedRoute>} /> */}
-        <Route path="/admin/dashboard" element={<Dashboard />} />
-        <Route path="/admin/publish_news" element={<NewsForm />} />
-        <Route path="/admin/comments" element={<CommentsModeration />} />
+
+        {/* Admin only: everything inside is guarded once, here */}
+        <Route element={<ProtectedRoute adminOnly><Outlet /></ProtectedRoute>}>
+          <Route path="/admin/dashboard" element={<Dashboard />} />
+          <Route path="/admin/publish_news" element={<NewsForm />} />
+          <Route path="/admin/comments" element={<CommentsModeration />} />
+        </Route>
       </Route>
     </Routes>
   );
