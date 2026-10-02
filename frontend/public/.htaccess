@@ -1,10 +1,8 @@
-# Lets React Router handle deep links (/admin/dashboard, /login ...) on
-# Apache hosts such as InfinityFree. Vite copies this file into dist/.
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteBase /
-  RewriteRule ^index\.html$ - [L]
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
-</IfModule>
+RewriteEngine On
+
+# If the request is not for an existing file or directory...
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# ...serve index.html instead, so React Router can handle the route.
+RewriteRule ^ index.html [QSA,L]

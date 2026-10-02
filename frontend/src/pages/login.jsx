@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import Logo from "../assets/sujhavPeti.png";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/authContext";
+import api from "../api/axios";
 
 function Login() {
-    const { login, user, loading } = useAuth();
+    const { setUser, user, loading } = useAuth();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [msg, setMsg] = useState("");
@@ -33,13 +34,28 @@ function Login() {
         setSubmitting(true);
         setMsg("");
         try {
-            const loggedIn = await login(formData.email.trim(), formData.password);
+            const response = await api.post("login.php", {
+                email: formData.email.trim(),
+                password: formData.password
+            });
 
-            setMsg("Login successful.");
+            if(!response.data.success){
+                setMsg(response.data.message);
+                setMsgType("error");
+                return;
+            }
+
+            setMsg(response.data.message);
             setMsgType("success");
 
-            // Role based landing page
-            navigate(loggedIn.role === "admin" ? "/admin/dashboard" : "/home", { replace: true });
+            // Short pause so the success message is visible, then save the user
+            // in the auth context and go to the role based landing page
+            const loggedIn = response.data.user;
+            setTimeout(() => {
+                setUser(loggedIn);
+                navigate(loggedIn.role === "admin" ? "/admin/dashboard" : "/home", { replace: true });
+            }, 1200);
+
         } catch (error) {
             setMsg(
                 error.response

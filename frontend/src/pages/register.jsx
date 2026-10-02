@@ -1,10 +1,9 @@
-import { useState, setTimeout} from "react";
+import { useState } from "react";
 import { Link, useNavigate} from "react-router-dom";
 import { Eye, EyeOff, UserPlus } from "lucide-react";
 import api from "../api/axios";
 
 function Register() {
-//   const { login } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fname: "",
@@ -50,11 +49,17 @@ function Register() {
         setSubmitting(true);
         setMsg("");
         try {
-            const response = await api.post("/register", formData);
+            const response = await api.post("register.php", formData);
+
+            if(!response.data.success){
+                setMsg(response.data.message);
+                setMsgType("error");
+                return;
+            }
 
             setMsg(response.data.message);
             setMsgType("success");
-
+            
             setFormData({
                 fname: "",
                 lname: "",
@@ -62,14 +67,16 @@ function Register() {
                 password: ""
             });
 
+            // Short pause so the success message is visible, then go to login
             setTimeout(() => {
                 navigate("/login");
-            }, 500);
+            }, 1200);
 
         } catch (error) {
             setMsg(
-                error.response?.data?.message ||
-                "Registration failed."
+                error.response
+                    ? error.response.data?.message || "Registration failed."
+                    : "Cannot reach the server. Please try again."
             );
             setMsgType("error");
         } finally {

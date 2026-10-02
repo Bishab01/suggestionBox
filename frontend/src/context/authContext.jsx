@@ -1,82 +1,53 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import api from "../api/axios";
 
 const AuthContext = createContext(null);
 
-export function AuthProvider({ children }) {
-    const [user, setUser] = useState(null);
-    // true until the first /me call finishes, so ProtectedRoute does not
-    // bounce a logged-in user to /login while the session is being checked.
-    const [loading, setLoading] = useState(true);
+export const useAuth = () => useContext(AuthContext);
 
-    // Restore the session after a page refresh (the cookie lives in the browser,
-    // the user data lives on the server).
-    useEffect(() => {
-        let cancelled = false;
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // true until first checkSession resolves
 
-        api.get("/me")
-            .then((res) => {
-                if (!cancelled) setUser(res.data.user);
-            })
-            .catch(() => {
-                if (!cancelled) setUser(null);
-            })
-            .finally(() => {
-                if (!cancelled) setLoading(false);
-            });
+  const loggedIn = user !== null;
+  const isAdmin = user?.role === "admin";
 
-        return () => {
-            cancelled = true;
-        };
-    }, []);
+  // Asks PHP "is there a valid session cookie?" (runs on first load / refresh)
+  const checkSession = async () => {
+    try {
+      const { data } = await api.get("checkSession.php");
+      setUser(data.loggedIn ? data.user : null);
+    } catch (error) {
+      console.error(error);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const login = async (email, password) => {
-        const response = await api.post("/login", { email, password });
-        setUser(response.data.user);
-        return response.data.user;
-    };
+  // Always clears the local user; returns the server's message for display.
+  const logout = async () => {
+    let message = "Logged out.";
+    try {
+      const { data } = await api.post("logout.php");
+      message = data?.message || message;
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setUser(null);
+    }
+    return message;
+  };
 
-    const register = async (fname, lname, email, password) => {
-        const response = await api.post("/register", {
-            fname,
-            lname,
-            email,
-            password,
-        });
-        return response.data.user;
-    };
+  useEffect(() => {
+    checkSession();
+  }, []);
 
-    const logout = async () => {
-        try {
-            await api.post("/logout");
-        } catch {
-            // Even if the server call fails (expired session, offline),
-            // the user should still be logged out in the UI.
-        } finally {
-            setUser(null);
-        }
-    };
-
-    const isAdmin = user?.role === "admin";
-    const isCitizen = user?.role === "citizen";
-
-    return (
-        <AuthContext.Provider
-            value={{
-                user,
-                loading,
-                login,
-                register,
-                logout,
-                isAdmin,
-                isCitizen,
-            }}
-        >
-            {children}
-        </AuthContext.Provider>
-    );
-}
-
-export function useAuth() {
-    return useContext(AuthContext);
-}
+  return (
+    <AuthContext.Provider
+      value={{ user, setUser, loggedIn, isAdmin, loading, logout, checkSession }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};

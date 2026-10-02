@@ -19,25 +19,14 @@ function Approutes() {
 
       <Route element={<App />}>
         {/* Open to all */}
-         <Route path="/" element={<Navigate to="/home" replace />} />
+        <Route path="/" element={<Navigate to="/home" replace />} />
         <Route path="/home" element={<Home />} />
-        {/* <Route path="/products" element={<Products />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/orders" element={<Orders />} /> */}
-
-        {/* {/* Open to customers }
-        <Route path="/cart" element={<CustomerOnlyRoute><Cart /></CustomerOnlyRoute>} />
-        <Route path="/checkout" element={<CustomerOnlyRoute><Checkout /></CustomerOnlyRoute>} />
-
-        {/* Open to retailer }
-        <Route path="/productsRetailer" element={<RetailerRoute><AdminProducts /></RetailerRoute>} /> */}
-        {/* <Route path="/dashboard" element={<ProtectedRoute adminOnly><Dashboard /></ProtectedRoute>} /> */}
 
         {/* Admin only: everything inside is guarded once, here */}
         <Route element={<ProtectedRoute adminOnly><Outlet /></ProtectedRoute>}>
           <Route path="/admin/dashboard" element={<Dashboard />} />
           <Route path="/admin/publish_news" element={<NewsForm />} />
+          <Route path="/admin/news/:nid/edit" element={<NewsForm />} />
           <Route path="/admin/comments" element={<CommentsModeration />} />
         </Route>
       </Route>

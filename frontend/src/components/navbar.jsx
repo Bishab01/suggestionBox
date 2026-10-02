@@ -1,6 +1,5 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Landmark, LogIn, LogOut } from "lucide-react";
-import { useState } from "react";
 import {useAuth} from "../context/authContext";
 
 function Navbar() {
@@ -12,15 +11,15 @@ function Navbar() {
   ];
 
   const adminNav = [
-    {name:"Admin Dashboard", path:"/dashboard"},
+    {name:"Admin Dashboard", path:"/admin/dashboard"},
     {name:"News & Plans", path:"/home"},
   ];  
 
   const navigations = isAdmin ? adminNav : citizenNav;
 
   const handleLogout = async () => {
-    await logout();
-    navigate("/login");
+    const message = await logout();
+    navigate("/login", { state: { message } });
   };
 
   return (

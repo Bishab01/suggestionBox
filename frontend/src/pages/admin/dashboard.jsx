@@ -1,41 +1,61 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../../api/axios";
-import {mockNews} from "../../data/newsData";
+import { formatDate } from "../../utils/format";
 import {Plus, Newspaper} from "lucide-react";
 
 function Dashboard() {
-  const [loading, setLoading] = useState(false);
+  const [news, setNews] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // useEffect(() => {
-  //   api
-  //     .get("/admin/news")
-  //     .then((res) => setNews(res.data.data))
-  //     .catch(() => setError("Could not load news."))
-  //     .finally(() => setLoading(false));
-  // }, []);
+  const loadNews = async () => {
+    try {
+      const res = await api.get("getNews.php");
+      if (!res.data.success) {
+        setError(res.data.message || "Could not load news.");
+        return;
+      }
+      setNews(res.data.news);
+      setError("");
+    } catch {
+      setError("Could not load news.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // const handleDelete = async (id) => {
-  //   if (!confirm("Delete this news item? This cannot be undone.")) return;
-  //   try {
-  //     await api.delete(`/admin/news/${id}`);
-  //     setNews((prev) => prev.filter((n) => n.id !== id));
-  //   } catch (err) {
-  //     alert(err.response?.data?.message || "Delete failed.");
-  //   }
-  // };
+  useEffect(() => {
+    loadNews();
+  }, []);
 
-  // const togglePublish = async (item) => {
-  //   try {
-  //     const res = await api.patch(`/admin/news/${item.id}`, {
-  //       status: item.status === "published" ? "draft" : "published",
-  //     });
-  //     setNews((prev) => prev.map((n) => (n.id === item.id ? res.data : n)));
-  //   } catch (err) {
-  //     alert(err.response?.data?.message || "Update failed.");
-  //   }
-  // };
+  // toggleStatus.php expects the CURRENT status and flips it
+  const togglePublish = async (item) => {
+    try {
+      const res = await api.post("toggleStatus.php", { nid: item.nid, nStatus: item.status });
+      if (!res.data.success) {
+        setError(res.data.message || "Could not change status.");
+        return;
+      }
+      await loadNews();
+    } catch (err) {
+      setError(err.response?.data?.message || "Could not change status.");
+    }
+  };
+
+  const handleDelete = async (item) => {
+    if (!window.confirm(`Delete "${item.title}"? Its comments will be deleted too.`)) return;
+    try {
+      const res = await api.post("deleteNews.php", { nid: item.nid });
+      if (!res.data.success) {
+        setError(res.data.message || "Could not delete news.");
+        return;
+      }
+      await loadNews();
+    } catch (err) {
+      setError(err.response?.data?.message || "Could not delete news.");
+    }
+  };
 
   return (
     <div className="body responsiveM">
@@ -69,8 +89,8 @@ function Dashboard() {
           </thead>
 
           <tbody className="divide-y divide-gray-100">
-            {mockNews.map((item) => (
-              <tr key={item.id} className="hover:bg-gray-50">
+            {news.map((item) => (
+              <tr key={item.nid} className="hover:bg-gray-50">
                 
                 <td>
                   {/* status for small screen */}
@@ -108,28 +128,26 @@ function Dashboard() {
 
                 {/* published date */}
                 <td className="hidden md:block px-4 py-3 whitespace-nowrap">
-                  {item.published_at
-                    ? item.published_at
-                    : "—"}
+                  {formatDate(item.published_at)}
                 </td>
 
                 {/* action button */}
                 <td className="px-4 py-3">
                   <div className="flex flex-wrap gap-2">
                     <button className="btnSmall" 
-                    // onClick={() => togglePublish(item)}
+                    onClick={() => togglePublish(item)}
                     >
                       {item.status === "published" ? "Unpublish" : "Publish"}
                     </button>
                     <Link 
                       className="btnSmall" 
-                      // to={`/admin/news/${item.id}/edit`}
+                      to={`/admin/news/${item.nid}/edit`}
                     >
                       Edit
                     </Link>
                     <button
                       className="btnSmall btnDanger"
-                      // onClick={() => handleDelete(item.id)}
+                      onClick={() => handleDelete(item)}
                     >
                       Delete
                     </button>
@@ -140,7 +158,7 @@ function Dashboard() {
           </tbody>
         </table>
       </div>
-      {!loading && mockNews.length === 0 && (
+      {!loading && !error && news.length === 0 && (
         <div className="w-full h-90 border border-gray-100 bg-white rounded-lg shadow-lg
           flex flex-col items-center justify-center text-center text-gray-500"
         >

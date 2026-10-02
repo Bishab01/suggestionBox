@@ -1,25 +1,29 @@
 import { useEffect, useState } from "react";
 import { MessageSquare, Newspaper } from "lucide-react";
-import { mockNews } from "../data/newsData";
+import api from "../api/axios";
+import { decodeHtml, formatDate } from "../utils/format";
 import NewsDetail from "./newsDetail";
 
 function Home() {
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [lastPage, setLastPage] = useState(1);
+  const [news, setNews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [selectedNews, setSelectedNews] = useState(null);
 
-//   useEffect(() => {
-//     api
-//       .get(`/news?page=${page}`)
-//       .then((res) => {
-//         setNews(res.data.data);
-//         setLastPage(res.data.last_page || 1);
-//         setError("");
-//       })
-//       .catch(() => setError("Could not load news and plans."))
-//       .finally(() => setLoading(false));
-//   }, [page]);
+  useEffect(() => {
+    api
+      .get("getNews.php")
+      .then((res) => {
+        if (!res.data.success) {
+          setError(res.data.message || "Could not load news and plans.");
+          return;
+        }
+        setNews(res.data.news);
+        setError("");
+      })
+      .catch(() => setError("Could not load news and plans."))
+      .finally(() => setLoading(false));
+  }, []);
 
   if (selectedNews) {
     return (
@@ -39,22 +43,23 @@ function Home() {
       </p>
 
       {loading && <p className="text-gray-500 font-medium">Loading...</p>}
+      {error && <div className="alertError">{error}</div>}
 
       <div className="newsGrid">
-        {mockNews
+        {news
         .filter((item) => item.status === "published")
         .map((item) => (
           <div
             onClick={()=>setSelectedNews(item)}
-            key={item.id}
+            key={item.nid}
             className="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
           >
             <div className="flex flex-1 flex-col gap-2 p-4">
-              <span className="self-start">{item.category || "Announcement"}</span>
+              <span className="self-start">{item.category}</span>
               <h2 className="text-lg font-semibold text-gray-900">{item.title}</h2>
-              <p className="text-sm text-gray-600">{item.excerpt}</p>
+              <p className="text-sm text-gray-600">{decodeHtml(item.excerpt)}</p>
               <div className="mt-auto flex items-center justify-between pt-2 text-xs text-gray-500">
-                <span>{new Date(item.published_at).toLocaleDateString()}</span>
+                <span>{formatDate(item.published_at)}</span>
                 <span className="flex items-center gap-1">
                   <MessageSquare className="size-3.5" />
                   {item.comments_count} comments
@@ -65,7 +70,7 @@ function Home() {
         ))}
       </div>
 
-      {!loading && mockNews.length === 0 && (
+      {!loading && !error && news.length === 0 && (
         <div className="w-full h-90 border border-gray-100 bg-white rounded-lg shadow-lg
           flex flex-col items-center justify-center text-center text-gray-500"
         >
@@ -74,28 +79,6 @@ function Home() {
           <p className="text-sm md:text-md font-medium tracking-wide pt-1">We’ll share the latest updates as soon as they’re verified.</p>
         </div>
       )}
-
-      {/* {lastPage > 1 && (
-        <div className="mt-8 flex items-center justify-center gap-4 text-sm">
-          <button
-            className="btnOutline"
-            disabled={page <= 1}
-            onClick={() => setPage((p) => p - 1)}
-          >
-            Previous
-          </button>
-          <span>
-            Page {page} of {lastPage}
-          </span>
-          <button
-            className="btnOutline"
-            disabled={page >= lastPage}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            Next
-          </button>
-        </div>
-      )} */}
     </div>
   );
 }

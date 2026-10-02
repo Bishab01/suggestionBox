@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../api/axios";
+import { decodeHtml } from "../../utils/format";
 
 function NewsForm() {
-  // const { id } = useParams();
-  // const isEdit = Boolean(id);
-  const isEdit = false;
+  const { nid } = useParams();
+  const isEdit = Boolean(nid);
   const navigate = useNavigate();
   const [form, setForm] = useState({
     title: "",
@@ -21,11 +21,34 @@ function NewsForm() {
 
   const titleRegexp = /^[a-zA-Z\s]+$/;
 
-  // useEffect(() => {
-  //   if (isEdit) {
-  //     api.get(`/admin/news/${id}`).then((res) => setForm(res.data));
-  //   }
-  // }, [id, isEdit]);
+  // Edit mode: there is no "get one news" endpoint, so load the list (admins get
+  // drafts too) and pick the one being edited. excerpt/content are stored HTML-escaped.
+  useEffect(() => {
+    if (!isEdit) return;
+    api
+      .get("getNews.php")
+      .then((res) => {
+        const item = res.data.success && res.data.news.find((n) => n.nid === Number(nid));
+        if (!item) {
+          setMsg("News not found.");
+          setMsgType("error");
+          return;
+        }
+        setForm({
+          title: item.title,
+          // getNews.php sends fallbacks for empty category/author; don't put them in the form
+          category: item.category === "Uncategorized" ? "" : item.category,
+          author: item.author === "Anonymous" ? "" : item.author,
+          excerpt: decodeHtml(item.excerpt),
+          content: decodeHtml(item.content),
+          status: item.status,
+        });
+      })
+      .catch(() => {
+        setMsg("Could not load the news item.");
+        setMsgType("error");
+      });
+  }, [nid, isEdit]);
 
   const handleChange = (field) => (e) =>
     setForm({ ...form, [field]: e.target.value });
@@ -38,27 +61,37 @@ function NewsForm() {
       setMsgType("error");
       return;
     }
-    setMsg("News/Plan saved");
-    setMsgType("success");
-    // setSubmitting(true);
 
-    // try {
-    //   if (isEdit) {
-    //     await api.put(`/admin/news/${id}`, form);
-    //   } else {
-    //     await api.post("/admin/news", form);
-    //   }
-    //   navigate("/admin");
-    // } catch (err) {
-    //   const data = err.response?.data;
-    //   setError(
-    //     data?.message ||
-    //       (data?.errors && Object.values(data.errors).flat().join(" ")) ||
-    //       "Could not save news item."
-    //   );
-    // } finally {
-    //   setSubmitting(false);
-    // }
+    setSubmitting(true);
+    setMsg("");
+    try {
+      const response = isEdit
+        ? await api.post("editNews.php", { ...form, nid: Number(nid) })
+        : await api.post("addNews.php", form);
+
+      if (!response.data.success) {
+        setMsg(response.data.message);
+        setMsgType("error");
+        return;
+      }
+
+      setMsg(response.data.message);
+      setMsgType("success");
+
+      // Short pause so the success message is visible, then back to the dashboard
+      setTimeout(() => {
+        navigate("/admin/dashboard");
+      }, 1200);
+    } catch (error) {
+      setMsg(
+        error.response
+          ? error.response.data?.message || "Could not save news item."
+          : "Cannot reach the server. Please try again."
+      );
+      setMsgType("error");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -118,6 +151,7 @@ function NewsForm() {
         <textarea
           className="inputBox py-1.5"
           rows={2}
+          maxLength={500}
           value={form.excerpt || ""}
           onChange={handleChange("excerpt")}
         />
